@@ -236,20 +236,6 @@ struct Package {
     include_paths: Vec<PathBuf>,
 }
 
-#[cfg(all(target_env = "msvc", not(feature = "vendored")))]
-fn find_libnfc_pkg(_is_static: bool) -> Option<Package> {
-    match vcpkg::Config::new().find_package("libnfc") {
-        Ok(l) => Some(Package {
-            include_paths: l.include_paths,
-        }),
-        Err(e) => {
-            println!("Can't find libnfc pkg: {:?}", e);
-            None
-        }
-    }
-}
-
-#[cfg(all(not(target_env = "msvc"), not(feature = "vendored")))]
 fn find_libnfc_pkg(is_static: bool) -> Option<Package> {
     match pkg_config::Config::new().statik(is_static).probe("libnfc") {
         Ok(l) => {
